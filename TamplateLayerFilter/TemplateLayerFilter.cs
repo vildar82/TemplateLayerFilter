@@ -5,6 +5,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.LayerManager;
 using Microsoft.Win32;
+using System.IO;
 
 namespace Vil.Acad.TemplateLayerFilter
 {
@@ -18,9 +19,9 @@ namespace Vil.Acad.TemplateLayerFilter
          Editor ed = doc.Editor;
 
          string qNewTemplateFile = GetQNewTemplateFile();
-         if (qNewTemplateFile == string.Empty)
+         if (qNewTemplateFile == string.Empty || !File.Exists(qNewTemplateFile))
          {
-            ed.WriteMessage("Не определен шаблон по умолчанию, из которого должны корпироваться фильтры слоев.");
+            ed.WriteMessage("\nНе определен шаблон по умолчанию, из которого должны корпироваться фильтры слоев.");
             return;
          }
 
