@@ -32,23 +32,7 @@
     <WarningLevel>4</WarningLevel>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="AcadLib">
-      <HintPath>..\..\..\AcadLib\AcadLib\bin\Release\AcadLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcCoreMgd">
-      <HintPath>\\picompany.ru\root\dep_ort\8.САПР\технические данные\source\Dll\AutoCAD\ObjectARX2013\inc\AcCoreMgd.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcDbMgd">
-      <HintPath>\\picompany.ru\root\dep_ort\8.САПР\технические данные\source\Dll\AutoCAD\ObjectARX2013\inc\AcDbMgd.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcMgd">
-      <HintPath>\\picompany.ru\root\dep_ort\8.САПР\технические данные\source\Dll\AutoCAD\ObjectARX2013\inc\AcMgd.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+  <ItemGroup>    
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -62,6 +46,10 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TemplateLayerFilter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AcadLib" version="1.0.0"/>
+    <PackageReference Include="NetLib" version="1.1.13"/>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

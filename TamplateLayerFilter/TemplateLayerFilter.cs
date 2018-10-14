@@ -1,5 +1,4 @@
-﻿//AUTOCAD
-using Autodesk.AutoCAD.ApplicationServices;
+﻿using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Runtime;
@@ -9,6 +8,7 @@ using System.IO;
 using AcadLib;
 using System;
 using Autodesk.AutoCAD.Windows;
+using OpenFileDialog = Autodesk.AutoCAD.Windows.OpenFileDialog;
 using Registry = Autodesk.AutoCAD.Runtime.Registry;
 using RegistryKey = Autodesk.AutoCAD.Runtime.RegistryKey;
 
@@ -158,6 +158,7 @@ namespace Vil.Acad.TemplateLayerFilter
             {
                 throw new CancelByUserException();
             }
+
             return dlg.Filename;
         }
     }
