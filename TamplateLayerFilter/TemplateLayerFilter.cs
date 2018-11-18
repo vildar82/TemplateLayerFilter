@@ -156,7 +156,7 @@ namespace Vil.Acad.TemplateLayerFilter
             var dlg = new OpenFileDialog("Выбор файла с фильтрами слоев", "", "dwg; dwt", "dlgName", OpenFileDialog.OpenFileDialogFlags.NoUrls);
             if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK)
             {
-                throw new CancelByUserException();
+                throw new OperationCanceledException();
             }
 
             return dlg.Filename;
