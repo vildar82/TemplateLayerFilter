@@ -1,19 +1,14 @@
-﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.LayerManager;
-using Microsoft.Win32;
-using System.IO;
-using AcadLib;
-using System;
-using Autodesk.AutoCAD.Windows;
-using OpenFileDialog = Autodesk.AutoCAD.Windows.OpenFileDialog;
-using Registry = Autodesk.AutoCAD.Runtime.Registry;
-using RegistryKey = Autodesk.AutoCAD.Runtime.RegistryKey;
-
-namespace Vil.Acad.TemplateLayerFilter
+﻿namespace Vil.Acad.TemplateLayerFilter
 {
+    using System;
+    using System.IO;
+    using AcadLib;
+    using Autodesk.AutoCAD.DatabaseServices;
+    using Autodesk.AutoCAD.LayerManager;
+    using Autodesk.AutoCAD.Runtime;
+    using OpenFileDialog = Autodesk.AutoCAD.Windows.OpenFileDialog;
+    using Registry = Autodesk.AutoCAD.Runtime.Registry;
+
     public static class Commands
     {
         [CommandMethod(nameof(Pik_ImportLayerFilters))]
@@ -27,7 +22,7 @@ namespace Vil.Acad.TemplateLayerFilter
                 ImportLayerFilterTree(file, lft.Root, doc.Database);
                 doc.Database.LayerFilters = lft;
             });
-        }        
+        }
 
         [CommandMethod("TemplateLayerFilter")]
         public static void TemplateLayerFilter()
@@ -40,14 +35,15 @@ namespace Vil.Acad.TemplateLayerFilter
                 var qNewTemplateFile = GetQNewTemplateFile();
                 if (qNewTemplateFile == string.Empty || !File.Exists(qNewTemplateFile))
                 {
-                    ed.WriteMessage("\nНе определен шаблон по умолчанию, из которого должны корпироваться фильтры слоев.");
+                    ed.WriteMessage(
+                        "\nНе определен шаблон по умолчанию, из которого должны корпироваться фильтры слоев.");
                     return;
                 }
 
                 var lft = db.LayerFilters;
                 ImportLayerFilterTree(qNewTemplateFile, lft.Root, db);
                 db.LayerFilters = lft;
-            });            
+            });
         }
 
         private static string GetQNewTemplateFile()
@@ -71,7 +67,8 @@ namespace Vil.Acad.TemplateLayerFilter
             }
         }
 
-        public static void ImportNestedFilters(LayerFilter srcFilter, LayerFilter destFilter, Database srcDb, Database destDb)
+        public static void ImportNestedFilters(LayerFilter srcFilter, LayerFilter destFilter, Database srcDb,
+            Database destDb)
         {
             using (var t = srcDb.TransactionManager.StartTransaction())
             {
@@ -91,11 +88,12 @@ namespace Vil.Acad.TemplateLayerFilter
                         }
                     }
 
-                    // Клонируем слои во внешнюю db 
+                    // Клонируем слои во внешнюю db
                     var idmap = new IdMapping();
                     if (layerIds.Count > 0)
                     {
-                        srcDb.WblockCloneObjects(layerIds, destDb.LayerTableId, idmap, DuplicateRecordCloning.Replace, false);
+                        srcDb.WblockCloneObjects(layerIds, destDb.LayerTableId, idmap, DuplicateRecordCloning.Replace,
+                            false);
                     }
 
                     // Опеределяем не было ли фильтра слоев
@@ -112,16 +110,12 @@ namespace Vil.Acad.TemplateLayerFilter
 
                     if (df == null)
                     {
-                        if (sf is LayerGroup)
+                        if (sf is LayerGroup sfgroup)
                         {
                             // Создаем новую группу слоев если
                             // ничего не найдено
-                            var sfgroup = sf as LayerGroup;
-                            var dfgroup = new LayerGroup();
-                            dfgroup.Name = sf.Name;
-
+                            var dfgroup = new LayerGroup { Name = sfgroup.Name };
                             df = dfgroup;
-
                             var lyrs = sfgroup.LayerIds;
                             foreach (ObjectId lid in lyrs)
                             {
@@ -131,15 +125,14 @@ namespace Vil.Acad.TemplateLayerFilter
                                     dfgroup.LayerIds.Add(idp.Value);
                                 }
                             }
+
                             destFilter.NestedFilters.Add(df);
                         }
                         else
                         {
                             // Создаем фильтр слоев если
                             // ничего не найдено
-                            df = new LayerFilter();
-                            df.Name = sf.Name;
-                            df.FilterExpression = sf.FilterExpression;
+                            df = new LayerFilter { Name = sf.Name, FilterExpression = sf.FilterExpression };
                             destFilter.NestedFilters.Add(df);
                         }
                     }
@@ -147,13 +140,15 @@ namespace Vil.Acad.TemplateLayerFilter
                     // Импортируем другие фильтры
                     ImportNestedFilters(sf, df, srcDb, destDb);
                 }
+
                 t.Commit();
             }
         }
 
         private static string SelectFile()
         {
-            var dlg = new OpenFileDialog("Выбор файла с фильтрами слоев", "", "dwg; dwt", "dlgName", OpenFileDialog.OpenFileDialogFlags.NoUrls);
+            var dlg = new OpenFileDialog("Выбор файла с фильтрами слоев", string.Empty, "dwg; dwt", "dlgName",
+                OpenFileDialog.OpenFileDialogFlags.NoUrls);
             if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK)
             {
                 throw new OperationCanceledException();
